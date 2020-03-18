@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<style>
+		body {
+			text-align: center;
+		}
+		#main {
+			margin: 2rem;
+		}
+	</style>
+	<title>Text display</title>
+</head>
+
+<body>
+	<div id="main">Put content here.</div>
+	<script>
+		function escapeHtml(text) {
+			var map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#039;'
+			};
+			return text.replace(/[&<>"']/g, (m) => map[m]);
+		}
+		const textReplacements = {
+			'\\n': '\n',
+			'\\s': ' ',
+		}
+		const htmlReplacements = {
+			'\\b': '<b>',
+			'\\!b': '</b>',
+			'\\i': '<i>',
+			'\\!i': '</i>',
+			'\\h1': '<h1>',
+			'\\!h1': '</h1>',
+			'\\h2': '<h2>',
+			'\\!h2': '</h2>',
+		}
+
+		const url = new URL(window.location.href);
+		if(url.hash) {
+			let text = decodeURI(url.hash.slice(1));
+			Object.keys(textReplacements).forEach(original => text = text.replace(new RegExp(original.replace(/\\/, '\\\\'), 'g'),
+				textReplacements[original]))
+
+				document.getElementById('main').innerText = text;
+
+			const searchRegexString = Object.keys(htmlReplacements).map(str => str.replace(/\\/g, '\\\\').replace(/°/g, '\\')).join('|')
+			console.log(searchRegexString)
+			document.getElementById('main').innerHTML = document.getElementById('main').innerHTML.replace(new RegExp(searchRegexString, 'g'), origin => htmlReplacements[origin])
+		}
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+			integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<style>
+			textarea {
+				border: 1px black solid;
+				width: 100%;
+			}
+			input {
+				border: 1px black solid
+			}
+			div {
+				margin-bottom: 1rem;
+			}
+			table {
+				width: 100%;
+			}
+			tr {
+				padding-bottom: 1rem;
+			}
+			td {
+				vertical-align: top;
+			}
+		</style>
+		<title>Text Display Generator</title>
+		
+	</head>
+
+	<body>
+		<h1>Text Display Generator</h1>
+		Style with markdown
+		<div>
+			<textarea id="input" placeholder="input"></textarea>
+		</div>
+		<div>
+			<table>
+				<tr>
+					<td>Text output:</td>
+					<td><textarea id="output" placeholder="output"></textarea></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Link:</td>
+					<td><a id="outputLink" target="_blank" href="https://google.com" >https://google.com</a></td>
+				</tr>
+			</table>
+		</div>
+
+		<script defer>
+			const inputArea  = document.getElementById('input')
+			const outputArea = document.getElementById('output')
+			const outputLink = document.getElementById('outputLink')
+
+			function compile(text) {
+				function checkForBold(line) {
+					let boldTransitioning = false;
+					let inBold = false;
+					let boldContent;
+					let convertedLine = ''
+					for (let i = 0; i < line.length; i++) { // abcdef**ghai**ll
+						const char = line[i];
+						
+						if(boldTransitioning) {
+							boldTransitioning = false;
+							if(inBold) {
+								inBold = false
+								convertedLine += '\\b' + boldContent + '\\!b'
+							} else {
+								inBold = true
+								boldContent = ''
+							}
+							continue
+						}
+						if(char === '*' && line[i+1] === '*') {
+							boldTransitioning = true
+							continue
+						}
+
+						if(inBold) {
+							boldContent += char
+						} else {
+							convertedLine += char
+						}
+					}
+					return convertedLine
+				}
+				function checkForItalic(line) {
+					let transitioning = false;
+					let inBold = false;
+					let boldContent;
+					let convertedLine = ''
+					for (let i = 0; i < line.length; i++) { // abcdef**ghai**ll
+						const char = line[i];
+						
+						if(transitioning) {
+							transitioning = false;
+							if(inBold) {
+								inBold = false
+								convertedLine += '\\i' + boldContent + '\\!i'
+							} else {
+								inBold = true
+								boldContent = ''
+							}
+						}
+						if(char === '*') {
+							transitioning = true
+							continue
+						}
+
+						if(inBold) {
+							boldContent += char
+						} else {
+							convertedLine += char
+						}
+					}
+					return convertedLine
+				}
+				
+				const lines = text.split('\n')
+				const linesWithFormatting = []
+				lines.forEach(line => {
+
+					// comments
+					if(line.startsWith(' #'))
+						return
+
+					let resultLine
+
+					// h1
+					if(line.startsWith('# '))
+						resultLine = '\\h1' + line.slice(2) + '\\!h1'
+					// h2
+					else if(line.startsWith('## ')) 
+						resultLine = '\\h2' + line.slice(3) + '\\!h2'
+					// normal
+					else {
+
+						// bold
+						const lineWithBold = checkForBold(line)
+
+						// italic
+						const lineWithItalic = checkForItalic(lineWithBold)
+
+						// // replace with special chars
+						// const specialChars = {
+						// }
+						// const searchRegexString = Object.keys(specialChars).join('|')
+						resultLine = lineWithItalic + '\\n'
+
+					}
+
+					linesWithFormatting.push(resultLine)
+
+				})
+				console.log('Compiled text:', linesWithFormatting.join(''))
+				return linesWithFormatting.join('')
+			}
+			function onChange() {
+				const compiledValue = compile(inputArea.value)
+				const href = 'https://darxoon.github.io/TtestDisplay/#' + compiledValue
+				outputArea.value = compiledValue
+				outputLink.innerText = href
+				outputLink.href = href
+				console.log(compiledValue)
+			}
+
+			inputArea.addEventListener('keyup', onChange)
+			inputArea.addEventListener('change', onChange)
+		</script>
+	</body>
+
+</html>

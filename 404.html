@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>This Page has Moved</title>
+    <style>
+        html, body { margin: 0; background: black; }
+        body { height: 100vh; display: flex; }
+        
+        div {
+            width: fit-content; height: min-content; 
+            
+            margin: auto; 
+        }
+        
+        h1, p {
+            color: white;
+            text-align: center;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        
+        h1 { font-size: 32pt; font-weight: bold; text-transform: uppercase; }
+        p { font-size: 16pt }
+        
+        a { color: #3a93f3 }
+        a:visited { color: #5f67e6 }
+    </style>
+    
+    <script>
+        window.onload = () => {
+            let link = document.getElementById('link')
+            let addend = link.slice(link.toLowerCase().indexOf('darxoon.github.io/') + 'darxoon.github.io/'.length)
+            let newUrl = 'https://darxoon.neocities.org/' + addend
+            link.innerText = newUrl
+            link.href = newUrl
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h1>This page has moved</h1>
+        <p>Visit <a id="link" href="https://darxoon.neocities.org">https://darxoon.neocities.org/</a></p>
+    </div>
+</body>
+</html>

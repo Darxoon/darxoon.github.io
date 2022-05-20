@@ -29,7 +29,8 @@
     <script>
         window.onload = () => {
             let link = document.getElementById('link')
-            let addend = link.slice(link.toLowerCase().indexOf('darxoon.github.io/') + 'darxoon.github.io/'.length)
+            let currentUrl = window.location.href
+            let addend = currentUrl.slice(currentUrl.toLowerCase().indexOf('darxoon.github.io/') + 'darxoon.github.io/'.length)
             let newUrl = 'https://darxoon.neocities.org/' + addend
             link.innerText = newUrl
             link.href = newUrl
